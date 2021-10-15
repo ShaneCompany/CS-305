@@ -1,0 +1,93 @@
+package main;
+
+import (
+	"fmt";
+	"io/ioutil";
+	"os";
+	"strings";
+	"strconv";
+)
+
+func check(e error) {
+
+	if e != nil {
+		panic(e);
+	}
+}
+
+
+func isNum(char string) bool{
+	var num = [...]string {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+	for i := 0; i < 10; i++ {
+		if char == num[i]{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+func parseOutLetter(in string) string {
+	if len(in) == 0 {
+		return "";
+	}else if isNum(string(in[0])){
+		if isNum(string(in[1])){
+			if isNum(string(in[2])){
+
+				return string(in[0]) + string(in[1]) + string(in[2]) + "_" + parseOutLetter(in[3:])
+			}else {
+				return string(in[0]) + string(in[1]) +  "_" + parseOutLetter(in[2:])
+			}
+
+			return string(in[0]) + string(in[1]) + "_" + parseOutLetter(in[2:])
+		}else{
+			return string(in[0]) + parseOutLetter(in[1:]);
+		}
+		
+		return string(in[0]) + parseOutLetter(in[1:]);
+	}else{
+		return parseOutLetter(in[1:]);
+	}
+}
+
+
+func splitParsed(input string) string{
+
+	sentence := strings.Split(input, "_");
+	hold := "";
+	for word := range sentence {
+		number, err := strconv.Atoi(sentence[word]);
+		if err == nil{
+			a := string(number);
+			hold += string(a);
+		}
+	}
+	return hold;
+}
+
+func writeFile(file string, text string) {
+	err := ioutil.WriteFile(file, []byte(text), 0644);
+	check(err);
+	return;
+}
+
+
+func readFile(file string) string {
+	contents, err := ioutil.ReadFile(file);
+	check(err);
+	return string(contents);
+}
+
+func main() {
+	var input string = os.Args[1];
+	var contents string = readFile(input);
+	var parsed string = parseOutLetter(contents);
+	var concat string  = splitParsed(parsed);
+	fmt.Println(concat);
+	concat += "\n";
+	fmt.Print("Output file (.txt): ");
+	var output string;
+	fmt.Scanln(&output);
+	writeFile(output, concat);
+	fmt.Println("Task Completed! \n");
+}

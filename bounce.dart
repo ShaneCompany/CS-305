@@ -34,7 +34,7 @@ void resetOnClick(MouseEvent event){
 //This physically draws the ball so we can actually see it
 void drawBall(){
   ctx.clearRect(0,0, canvas.width, canvas.height);
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "red";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.restore();
   
